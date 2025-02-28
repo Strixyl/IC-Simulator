@@ -1,4 +1,6 @@
 Logic Gates Simulator
+
+
 This project is a simple graphical user interface (GUI) application that allows users to simulate basic logic gates (AND, OR, NOT, NAND, NOR, XOR) using Python's tkinter library.
 
 Features
