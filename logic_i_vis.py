@@ -2,23 +2,38 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 
 # Logic gate functions
-def AND(a, b):
-    return a & b
+def AND(*args):
+    result = args[0]
+    for arg in args[1:]:
+        result &= arg
+    return result
 
-def OR(a, b):
-    return a | b
+def OR(*args):
+    result = args[0]
+    for arg in args[1:]:
+        result |= arg
+    return result
 
 def NOT(a):
     return ~a & 1
 
-def NAND(a, b):
-    return ~(a & b) & 1
+def NAND(*args):
+    result = args[0]
+    for arg in args[1:]:
+        result &= arg
+    return ~result & 1
 
-def NOR(a, b):
-    return ~(a | b) & 1
+def NOR(*args):
+    result = args[0]
+    for arg in args[1:]:
+        result |= arg
+    return ~result & 1
 
-def XOR(a, b):
-    return a ^ b
+def XOR(*args):
+    result = args[0]
+    for arg in args[1:]:
+        result ^= arg
+    return result
 
 # Function to display logic gate results
 def display_logic_gates():
@@ -28,6 +43,9 @@ def display_logic_gates():
 
     # Ask the user how many input gates they need
     num_gates = simpledialog.askinteger("Input", "How many input gates do you need?", minvalue=1, maxvalue=14)
+
+    # Ask the user how many inputs per gate
+    num_inputs = simpledialog.askinteger("Input", "How many inputs per gate (2 or 3)?", minvalue=2, maxvalue=3)
 
     def calculate():
         try:
@@ -40,19 +58,20 @@ def display_logic_gates():
                 for i in inputs:
                     results.append(NOT(i))
             else:
-                for i in range(0, len(inputs), 2):
+                for i in range(0, len(inputs), num_inputs):
                     a = inputs[i]
                     b = inputs[i + 1] if i + 1 < len(inputs) else 0
+                    c = inputs[i + 2] if num_inputs == 3 and i + 2 < len(inputs) else 0
                     if gate == "AND":
-                        result = AND(a, b)
+                        result = AND(a, b, c)
                     elif gate == "OR":
-                        result = OR(a, b)
+                        result = OR(a, b, c)
                     elif gate == "NAND":
-                        result = NAND(a, b)
+                        result = NAND(a, b, c)
                     elif gate == "NOR":
-                        result = NOR(a, b)
+                        result = NOR(a, b, c)
                     elif gate == "XOR":
-                        result = XOR(a, b)
+                        result = XOR(a, b, c)
                     else:
                         result = "Invalid gate selected"
                     results.append(result)
@@ -70,33 +89,35 @@ def display_logic_gates():
         main_menu()
 
     entries = []
-    for i in range(num_gates):
+    for i in range(num_gates * num_inputs):
         tk.Label(root, text=f"Input {i + 1}:").grid(row=i, column=0, padx=10, pady=5)
-        entry = tk.Entry(root, width=10)
+        entry = tk.Entry(root, width=15)  # Increased width
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries.append(entry)
 
-    tk.Label(root, text="Select Gate:").grid(row=num_gates, column=0, padx=10, pady=5)
+    tk.Label(root, text="Select Gate:").grid(row=num_gates * num_inputs, column=0, padx=10, pady=5)
     gate_var = tk.StringVar(root)
     gate_var.set("AND")  # default value
     gate_menu = tk.OptionMenu(root, gate_var, "AND", "OR", "NOT", "NAND", "NOR", "XOR")
-    gate_menu.grid(row=num_gates, column=1, padx=10, pady=5)
+    gate_menu.config(width=10)  # Increased width
+    gate_menu.grid(row=num_gates * num_inputs, column=1, padx=10, pady=5)
 
-    tk.Button(root, text="Calculate", command=calculate).grid(row=num_gates + 1, column=0, padx=10, pady=10)
-    tk.Button(root, text="Clear", command=clear).grid(row=num_gates + 1, column=1, padx=10, pady=10)
-    tk.Button(root, text="Return", command=return_to_main).grid(row=num_gates + 2, column=0, columnspan=2, padx=10, pady=10)
+    tk.Button(root, text="Calculate", command=calculate).grid(row=num_gates * num_inputs + 1, column=0, padx=10, pady=10)
+    tk.Button(root, text="Clear", command=clear).grid(row=num_gates * num_inputs + 1, column=1, padx=10, pady=10)
+    tk.Button(root, text="Return", command=return_to_main).grid(row=num_gates * num_inputs + 2, column=0, columnspan=2, padx=10, pady=10)
 
     root.mainloop()
 
-
-# NEW FUNCTION FOR INTEGRATED CIRCUIT
 # Function to display integrated circuit results
 def display_integrated_circuit():
     root = tk.Tk()
     root.title("Integrated Circuit")
-    root.geometry("600x800")  # Set initial size for the window
+    root.geometry("750x800")  # Set initial size for the window
 
     num_gates = 7  # Fixed number of gates
+
+    # Ask the user how many inputs per gate
+    num_inputs = simpledialog.askinteger("Input", "How many inputs per gate (2 or 3)?", minvalue=2, maxvalue=3)
 
     def calculate():
         try:
@@ -106,18 +127,19 @@ def display_integrated_circuit():
             results = []
             for i in range(num_gates):
                 gate = gate_vars[i].get()
-                a = inputs[i * 2]
-                b = inputs[i * 2 + 1] if i * 2 + 1 < len(inputs) else 0
+                a = inputs[i * num_inputs]
+                b = inputs[i * num_inputs + 1] if i * num_inputs + 1 < len(inputs) else 0
+                c = inputs[i * num_inputs + 2] if num_inputs == 3 and i * num_inputs + 2 < len(inputs) else 0
                 if gate == "AND":
-                    result = AND(a, b)
+                    result = AND(a, b, c)
                 elif gate == "OR":
-                    result = OR(a, b)
+                    result = OR(a, b, c)
                 elif gate == "NAND":
-                    result = NAND(a, b)
+                    result = NAND(a, b, c)
                 elif gate == "NOR":
-                    result = NOR(a, b)
+                    result = NOR(a, b, c)
                 elif gate == "XOR":
-                    result = XOR(a, b)
+                    result = XOR(a, b, c)
                 else:
                     result = "Invalid gate selected"
                 results.append(result)
@@ -137,23 +159,24 @@ def display_integrated_circuit():
 
     entries = []
     gate_vars = []
-    for i in range(num_gates * 2):
+    for i in range(num_gates * num_inputs):
         tk.Label(root, text=f"Input {i + 1}:").grid(row=i, column=0, padx=10, pady=5)
-        entry = tk.Entry(root, width=10)
+        entry = tk.Entry(root, width=20)  # Increased width
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries.append(entry)
 
     for i in range(num_gates):
-        tk.Label(root, text=f"Select Gate {i + 1}:").grid(row=num_gates * 2 + i, column=0, padx=10, pady=5)
+        tk.Label(root, text=f"Select Gate {i + 1}:").grid(row=num_gates * num_inputs + i, column=0, padx=10, pady=5)
         gate_var = tk.StringVar(root)
         gate_var.set("AND")  # default value
         gate_menu = tk.OptionMenu(root, gate_var, "AND", "OR", "NAND", "NOR", "XOR")
-        gate_menu.grid(row=num_gates * 2 + i, column=1, padx=10, pady=5)
+        gate_menu.config(width=10)  # Increased width
+        gate_menu.grid(row=num_gates * num_inputs + i, column=1, padx=10, pady=5)
         gate_vars.append(gate_var)
 
-    tk.Button(root, text="Calculate", command=calculate).grid(row=num_gates * 3, column=0, padx=10, pady=10)
-    tk.Button(root, text="Clear", command=clear).grid(row=num_gates * 3, column=1, padx=10, pady=10)
-    tk.Button(root, text="Return", command=return_to_main).grid(row=num_gates * 3 + 1, column=0, columnspan=2, padx=10, pady=10)
+    tk.Button(root, text="Calculate", command=calculate).grid(row=num_gates * num_inputs + num_gates, column=0, padx=10, pady=10)
+    tk.Button(root, text="Clear", command=clear).grid(row=num_gates * num_inputs + num_gates, column=1, padx=10, pady=10)
+    tk.Button(root, text="Return", command=return_to_main).grid(row=num_gates * num_inputs + num_gates + 1, column=0, columnspan=2, padx=10, pady=10)
 
     root.mainloop()
 
@@ -161,7 +184,7 @@ def display_integrated_circuit():
 def main_menu():
     root = tk.Tk()
     root.title("Main Menu")
-    root.geometry("300x200")  # Set fixed size for the window
+    root.geometry("600x300")  # Set fixed size for the window
 
     def open_logic_gates():
         root.destroy()
