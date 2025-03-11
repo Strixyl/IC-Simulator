@@ -108,7 +108,7 @@ def display_logic_gates():
 
     root.mainloop()
 
-# Function to display integrated circuit results
+# display ic resluts 
 def display_integrated_circuit():
     root = tk.Tk()
     root.title("Integrated Circuit")
@@ -118,6 +118,28 @@ def display_integrated_circuit():
 
     # Ask the user how many inputs per gate
     num_inputs = simpledialog.askinteger("Input", "How many inputs per gate (2 or 3)?", minvalue=2, maxvalue=3)
+    
+    # cnasva for visual repsersentation
+    canvas = tk.Canvas(root, width=750, height=800)
+    canvas.grid(row=0, column=0)
+    
+    gate_positions = []
+    for i in range(num_gates):
+        x = 50 + i * 100
+        y = 50
+        gate_positions.append((x, y))
+        canvas.create_rectangle(x, y, x + 50, y + 50, outline="black", fill="white")
+        canvas.create_text(x + 25, y + 25, text=f"Gate {i + 1}")
+    
+    for i in range(num_gates -1 ):
+        x1, y1 = gate_positions[i][0] + 50, gate_positions[i][1] + 25
+        x2, y2 = gate_positions[i + 1][0], gate_positions[i + 1][1] + 25
+        canvas.create_line(x1, y1, x2, y2, arrow=tk.LAST)
+    
+    #  validating inouts for 1and0
+    def validate_inputs(inputs):
+        if any (i not in [0, 1] for i in inputs):
+            raise ValueError("Inputs must be 0 or 1")
 
     def calculate():
         try:
