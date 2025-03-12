@@ -35,16 +35,20 @@ def XOR(*args):
         result ^= arg
     return result
 
-# Function to display logic gate results
+# for validating inputs 1 or 0 
+def validate_digit(char):
+    return char in '01' and len(char) == 1
+
+# display logic gate
 def display_logic_gates():
     root = tk.Tk()
     root.title("Logic Gates")
-    root.geometry("400x400")  # Set fixed size for the window
+    root.geometry("400x400")  
 
-    # Ask the user how many input gates they need
+    
     num_gates = simpledialog.askinteger("Input", "How many input gates do you need?", minvalue=1, maxvalue=14)
 
-    # Ask the user how many inputs per gate
+
     num_inputs = simpledialog.askinteger("Input", "How many inputs per gate (2 or 3)?", minvalue=2, maxvalue=3)
 
     def calculate():
@@ -88,10 +92,13 @@ def display_logic_gates():
         root.destroy()
         main_menu()
 
+  
+    vcmd = (root.register(validate_digit), '%S')
+
     entries = []
     for i in range(num_gates * num_inputs):
         tk.Label(root, text=f"Input {i + 1}:").grid(row=i, column=0, padx=10, pady=5)
-        entry = tk.Entry(root, width=15)  # Increased width
+        entry = tk.Entry(root, width=15, validate='key', validatecommand=vcmd)  # Increased width and added validation
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries.append(entry)
 
@@ -108,21 +115,22 @@ def display_logic_gates():
 
     root.mainloop()
 
-# display ic resluts 
+# display ic
 def display_integrated_circuit():
     root = tk.Tk()
     root.title("Integrated Circuit")
-    root.geometry("750x800")  # Set initial size for the window
+    root.geometry("750x800")  
 
     num_gates = 7  # Fixed number of gates
 
     # Ask the user how many inputs per gate
     num_inputs = simpledialog.askinteger("Input", "How many inputs per gate (2 or 3)?", minvalue=2, maxvalue=3)
     
-    # cnasva for visual repsersentation
+    # canvas illutstration fot IC
     canvas = tk.Canvas(root, width=750, height=800)
     canvas.grid(row=0, column=0)
     
+    #draw gates and connections
     gate_positions = []
     for i in range(num_gates):
         x = 50 + i * 100
@@ -131,14 +139,14 @@ def display_integrated_circuit():
         canvas.create_rectangle(x, y, x + 50, y + 50, outline="black", fill="white")
         canvas.create_text(x + 25, y + 25, text=f"Gate {i + 1}")
     
-    for i in range(num_gates -1 ):
+    for i in range(num_gates - 1):
         x1, y1 = gate_positions[i][0] + 50, gate_positions[i][1] + 25
         x2, y2 = gate_positions[i + 1][0], gate_positions[i + 1][1] + 25
         canvas.create_line(x1, y1, x2, y2, arrow=tk.LAST)
     
-    #  validating inouts for 1and0
+    # Validate inputs for 1 and 0
     def validate_inputs(inputs):
-        if any (i not in [0, 1] for i in inputs):
+        if any(i not in [0, 1] for i in inputs):
             raise ValueError("Inputs must be 0 or 1")
 
     def calculate():
@@ -179,11 +187,14 @@ def display_integrated_circuit():
         root.destroy()
         main_menu()
 
+    # Validation command for entry widgets
+    vcmd = (root.register(validate_digit), '%S')
+
     entries = []
     gate_vars = []
     for i in range(num_gates * num_inputs):
         tk.Label(root, text=f"Input {i + 1}:").grid(row=i, column=0, padx=10, pady=5)
-        entry = tk.Entry(root, width=20)  # Increased width
+        entry = tk.Entry(root, width=20, validate='key', validatecommand=vcmd)  # Increased width and added validation
         entry.grid(row=i, column=1, padx=10, pady=5)
         entries.append(entry)
 
